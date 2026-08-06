@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <RootProviders>
-      <html lang="en" className={cn("font-sans", geist.variable)}>
+      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
         <body className="min-h-full flex flex-col">{children}</body>
       </html>
     </RootProviders>
