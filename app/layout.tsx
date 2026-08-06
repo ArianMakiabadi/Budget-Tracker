@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import RootProviders from "@/components/providers/RootProviders";
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
@@ -13,12 +14,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <ClerkProvider>
-      <TooltipProvider>
-        <html lang="en" className={cn("font-sans", geist.variable)}>
-          <body className="min-h-full flex flex-col">{children}</body>
-        </html>
-      </TooltipProvider>
-    </ClerkProvider>
+    <RootProviders>
+      <html lang="en" className={cn("font-sans", geist.variable)}>
+        <body className="min-h-full flex flex-col">{children}</body>
+      </html>
+    </RootProviders>
   );
 }
