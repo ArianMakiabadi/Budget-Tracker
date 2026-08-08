@@ -11,4 +11,14 @@ function Logo() {
     </Link>
   );
 }
+
+export function LogoMobile() {
+  return (
+    <Link href="/" className="flex gap-2 items-center">
+      <p className="bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent text-3xl font-bold leading-tight tracking-tighter">
+        BudgetTracker
+      </p>
+    </Link>
+  );
+}
 export default Logo;

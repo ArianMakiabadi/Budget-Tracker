@@ -13,7 +13,7 @@ function RootProviders({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <ClerkProvider>
+      <ClerkProvider afterSignOutUrl="sign-in">
         <TooltipProvider>{children}</TooltipProvider>
       </ClerkProvider>
     </ThemeProvider>
