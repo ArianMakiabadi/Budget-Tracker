@@ -1,4 +1,4 @@
-export const Currencies = [
+export const currencies = [
   { value: "USD", label: "USD — US Dollar", locale: "en-US" },
   { value: "EUR", label: "EUR — Euro", locale: "de-DE" },
   { value: "GBP", label: "GBP — British Pound", locale: "en-GB" },
@@ -26,4 +26,4 @@ export const Currencies = [
   { value: "ZAR", label: "ZAR — South African Rand", locale: "en-ZA" },
 ];
 
-export type Currency = (typeof Currencies)[0];
+export type Currency = (typeof currencies)[0];
