@@ -1,0 +1,111 @@
+"use client";
+
+import * as React from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { currencies, Currency } from "@/lib/currencies";
+import { ChevronDown } from "lucide-react";
+
+export function CurrencyComboBox() {
+  const [open, setOpen] = React.useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [selectedCurrency, setSelectedCurrency] =
+    React.useState<Currency | null>(null);
+
+  if (isDesktop) {
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          render={
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="h-12 w-full justify-between px-4 text-base"
+            />
+          }
+        >
+          {selectedCurrency ? (
+            <>{selectedCurrency.label}</>
+          ) : (
+            <>Select currency</>
+          )}
+          <ChevronDown className="size-4 opacity-50" />
+        </PopoverTrigger>
+        <PopoverContent className="w-(--anchor-width) p-0" align="start">
+          <StatusList
+            setOpen={setOpen}
+            setSelectedCurrency={setSelectedCurrency}
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger
+        render={<Button variant="outline" className="w-37.5 justify-center" />}
+      >
+        {selectedCurrency ? <>{selectedCurrency.label}</> : <>+ Set currency</>}
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mt-4 border-t">
+          <StatusList
+            setOpen={setOpen}
+            setSelectedCurrency={setSelectedCurrency}
+          />
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function StatusList({
+  setOpen,
+  setSelectedCurrency,
+}: {
+  setOpen: (open: boolean) => void;
+  setSelectedCurrency: (status: Currency | null) => void;
+}) {
+  return (
+    <Command>
+      <CommandInput placeholder="Filter currencies..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup>
+          {currencies.map((c) => (
+            <CommandItem
+              key={c.value}
+              value={c.value}
+              onSelect={(value) => {
+                setSelectedCurrency(
+                  currencies.find((priority) => priority.value === value) ||
+                    null,
+                );
+                setOpen(false);
+              }}
+            >
+              {c.label}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}
