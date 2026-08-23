@@ -48,7 +48,7 @@ export function CurrencyComboBox() {
           <ChevronDown className="size-4 opacity-50" />
         </PopoverTrigger>
         <PopoverContent className="w-(--anchor-width) p-0" align="start">
-          <StatusList
+          <CurrencyList
             setOpen={setOpen}
             setSelectedCurrency={setSelectedCurrency}
           />
@@ -66,7 +66,7 @@ export function CurrencyComboBox() {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList
+          <CurrencyList
             setOpen={setOpen}
             setSelectedCurrency={setSelectedCurrency}
           />
@@ -76,7 +76,7 @@ export function CurrencyComboBox() {
   );
 }
 
-function StatusList({
+function CurrencyList({
   setOpen,
   setSelectedCurrency,
 }: {
