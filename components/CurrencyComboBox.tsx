@@ -20,12 +20,26 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { currencies, Currency } from "@/lib/currencies";
 import { ChevronDown } from "lucide-react";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [selectedCurrency, setSelectedCurrency] =
     React.useState<Currency | null>(null);
+
+  const userSettings: UseQueryResult<Response, Error> = useQuery({
+    queryKey: ["userSettings"],
+    queryFn: async () => {
+      const res = await fetch("/api/user-settings");
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch user settings");
+      }
+
+      return res.json();
+    },
+  });
 
   if (isDesktop) {
     return (
