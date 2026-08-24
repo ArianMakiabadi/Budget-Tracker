@@ -20,8 +20,9 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { currencies, Currency } from "@/lib/currencies";
 import { ChevronDown } from "lucide-react";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "./SkeletonWrapper";
+import { UserSettings } from "@/lib/generated/prisma/client";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
@@ -29,7 +30,7 @@ export function CurrencyComboBox() {
   const [selectedCurrency, setSelectedCurrency] =
     React.useState<Currency | null>(null);
 
-  const userSettings: UseQueryResult<Response, Error> = useQuery({
+  const userSettings = useQuery<UserSettings>({
     queryKey: ["userSettings"],
     queryFn: async () => {
       const res = await fetch("/api/user-settings");
