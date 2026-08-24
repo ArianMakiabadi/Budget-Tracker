@@ -60,9 +60,13 @@ export function CurrencyComboBox() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        render={<Button variant="outline" className="w-37.5 justify-center" />}
+        render={<Button variant="outline" className="w-full justify-start" />}
       >
-        {selectedCurrency ? <>{selectedCurrency.label}</> : <>+ Set currency</>}
+        {selectedCurrency ? (
+          <>{selectedCurrency.label}</>
+        ) : (
+          <>Select currency</>
+        )}
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
