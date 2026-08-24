@@ -21,6 +21,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { currencies, Currency } from "@/lib/currencies";
 import { ChevronDown } from "lucide-react";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import SkeletonWrapper from "./SkeletonWrapper";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
@@ -43,54 +44,58 @@ export function CurrencyComboBox() {
 
   if (isDesktop) {
     return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger
-          render={
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="h-12 w-full justify-between px-4 text-base"
+      <SkeletonWrapper isLoading={userSettings.isFetching}>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger
+            render={
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="h-12 w-full justify-between px-4 text-base"
+              />
+            }
+          >
+            {selectedCurrency ? (
+              <>{selectedCurrency.label}</>
+            ) : (
+              <>Select currency</>
+            )}
+            <ChevronDown className="size-4 opacity-50" />
+          </PopoverTrigger>
+          <PopoverContent className="w-(--anchor-width) p-0" align="start">
+            <CurrencyList
+              setOpen={setOpen}
+              setSelectedCurrency={setSelectedCurrency}
             />
-          }
+          </PopoverContent>
+        </Popover>
+      </SkeletonWrapper>
+    );
+  }
+
+  return (
+    <SkeletonWrapper isLoading={userSettings.isFetching}>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger
+          render={<Button variant="outline" className="w-full justify-start" />}
         >
           {selectedCurrency ? (
             <>{selectedCurrency.label}</>
           ) : (
             <>Select currency</>
           )}
-          <ChevronDown className="size-4 opacity-50" />
-        </PopoverTrigger>
-        <PopoverContent className="w-(--anchor-width) p-0" align="start">
-          <CurrencyList
-            setOpen={setOpen}
-            setSelectedCurrency={setSelectedCurrency}
-          />
-        </PopoverContent>
-      </Popover>
-    );
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger
-        render={<Button variant="outline" className="w-full justify-start" />}
-      >
-        {selectedCurrency ? (
-          <>{selectedCurrency.label}</>
-        ) : (
-          <>Select currency</>
-        )}
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="mt-4 border-t">
-          <CurrencyList
-            setOpen={setOpen}
-            setSelectedCurrency={setSelectedCurrency}
-          />
-        </div>
-      </DrawerContent>
-    </Drawer>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mt-4 border-t">
+            <CurrencyList
+              setOpen={setOpen}
+              setSelectedCurrency={setSelectedCurrency}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </SkeletonWrapper>
   );
 }
 
