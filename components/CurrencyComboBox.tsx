@@ -20,9 +20,11 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { currencies, Currency } from "@/lib/currencies";
 import { ChevronDown } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "./SkeletonWrapper";
 import { UserSettings } from "@/lib/generated/prisma/client";
+import { updateUserCurrency } from "@/app/wizard/_actions/userSettings";
+import { toast } from "./ui/toast";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
@@ -43,9 +45,59 @@ export function CurrencyComboBox() {
     },
   });
 
+  const userCurrency = currencies.find(
+    (c) => c.value === userSettings.data?.currency,
+  );
+
+  const currentCurrency = selectedCurrency ?? userCurrency;
+
+  const mutation = useMutation({
+    mutationFn: updateUserCurrency,
+    onSuccess: (data: UserSettings) => {
+      toast.add({
+        type: "success",
+        title: "Currency updated successfully",
+        id: "update-currency",
+      });
+
+      setSelectedCurrency(
+        currencies.find((c) => c.value === data.currency) || null,
+      );
+    },
+
+    onError: () => {
+      toast.add({
+        type: "error",
+        title: "something went wrong!",
+        id: "update-currency",
+      });
+    },
+  });
+
+  const selectOption = React.useCallback(
+    (currency: Currency | null) => {
+      if (!currency) {
+        toast.add({
+          type: "error",
+          title: "please select a currency",
+        });
+        return;
+      }
+
+      toast.add({
+        type: "info",
+        title: "Updating currency...",
+        id: "update-currency",
+      });
+
+      mutation.mutate(currency?.value);
+    },
+    [mutation],
+  );
+
   if (isDesktop) {
     return (
-      <SkeletonWrapper isLoading={userSettings.isFetching}>
+      <SkeletonWrapper isLoading={userSettings.isLoading}>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             render={
@@ -54,11 +106,12 @@ export function CurrencyComboBox() {
                 role="combobox"
                 aria-expanded={open}
                 className="h-12 w-full justify-between px-4 text-base"
+                disabled={mutation.isPending}
               />
             }
           >
-            {selectedCurrency ? (
-              <>{selectedCurrency.label}</>
+            {currentCurrency ? (
+              <>{currentCurrency.label}</>
             ) : (
               <>Select currency</>
             )}
@@ -67,7 +120,7 @@ export function CurrencyComboBox() {
           <PopoverContent className="w-(--anchor-width) p-0" align="start">
             <CurrencyList
               setOpen={setOpen}
-              setSelectedCurrency={setSelectedCurrency}
+              setSelectedCurrency={selectOption}
             />
           </PopoverContent>
         </Popover>
@@ -79,10 +132,16 @@ export function CurrencyComboBox() {
     <SkeletonWrapper isLoading={userSettings.isFetching}>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger
-          render={<Button variant="outline" className="w-full justify-start" />}
+          render={
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              disabled={mutation.isPending}
+            />
+          }
         >
-          {selectedCurrency ? (
-            <>{selectedCurrency.label}</>
+          {currentCurrency ? (
+            <>{currentCurrency.label}</>
           ) : (
             <>Select currency</>
           )}
@@ -91,7 +150,7 @@ export function CurrencyComboBox() {
           <div className="mt-4 border-t">
             <CurrencyList
               setOpen={setOpen}
-              setSelectedCurrency={setSelectedCurrency}
+              setSelectedCurrency={selectOption}
             />
           </div>
         </DrawerContent>
