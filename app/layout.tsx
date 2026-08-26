@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import RootProviders from "@/components/providers/RootProviders";
+import { Toaster } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "Budget Tracker ",
@@ -12,7 +13,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <RootProviders>
       <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-        <body className="min-h-full flex flex-col">{children}</body>
+        <body className="min-h-full flex flex-col px-4 sm:px-6 lg:px-8">
+          <Toaster />
+          {children}
+        </body>
       </html>
     </RootProviders>
   );
