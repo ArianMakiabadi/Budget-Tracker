@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <RootProviders>
-      <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
-        <body className="min-h-full flex flex-col px-4 sm:px-6 lg:px-8">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col px-4 sm:px-6 lg:px-8">
+        <RootProviders>
           <Toaster />
           {children}
-        </body>
-      </html>
-    </RootProviders>
+        </RootProviders>
+      </body>
+    </html>
   );
 }
